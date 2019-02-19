@@ -81,5 +81,6 @@ def _get_production_logging_level(config):
         'WARNING': logging.WARNING,
         'ERROR': logging.ERROR
     }
-    return mapping.get(config['PRODUCTION_LOGGING_LEVEL'].upper())\
-           or logging.INFO
+    return mapping.get(
+        config['PRODUCTION_LOGGING_LEVEL'].upper()
+    ) or logging.INFO
