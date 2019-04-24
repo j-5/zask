@@ -44,10 +44,10 @@ class TestLogging(unittest.TestCase):
         app.logger.error("error")
         app.logger.exception("exception")
 
-        print ''
-        print 'printing file:'
+        print('')
+        print('printing file:')
         with open(app.config['ERROR_LOG'], 'r') as fin:
-            print fin.read()
+            print(fin.read())
 
     def test_prod_class(self):
         app = Zask(__name__)
@@ -65,10 +65,10 @@ class TestLogging(unittest.TestCase):
         hdlr = app.logger.handlers[0]
         self.assertEqual(hdlr.__class__.__name__, 'WatchedFileHandler')
 
-        print ''
-        print 'printing file:'
+        print('')
+        print('printing file:')
         with open(app.config['ERROR_LOG'], 'r') as fin:
-            print fin.read()
+            print(fin.read())
 
 
 if __name__ == '__main__':

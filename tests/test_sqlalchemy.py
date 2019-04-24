@@ -196,7 +196,6 @@ class TablenameTestCase(unittest.TestCase):
 
         self.assertEqual(RubberDuck.__tablename__, 'rubber_duck')
 
-
 class BindsTestCase(unittest.TestCase):
 
     def test_basic_binds(self):
