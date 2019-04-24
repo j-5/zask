@@ -92,7 +92,6 @@ def _include_sqlalchemy(obj):
     obj.dynamic_loader = _wrap_with_default_query_class(obj.dynamic_loader)
     obj.event = event
 
-
 def _should_set_tablename(bases, d):
     """Check what values are set by a class and
     its bases to determine if a
@@ -180,7 +179,7 @@ class BindSession(SessionBase):
     def get_bind(self, mapper, clause=None):
         # mapper is None if someone tries to just get a connection
         if mapper is not None:
-            info = getattr(mapper.persist_selectable, 'info', {})
+            info = getattr(mapper.mapped_table, 'info', {})
             bind_key = info.get('bind_key')
             if bind_key is not None:
                 state = get_state(self.app)
@@ -336,6 +335,7 @@ class SQLAlchemy(object):
         """Creates the declarative base."""
         base = declarative_base(cls=Model, name='Model',
                                 metaclass=_BoundDeclarativeMeta)
+
         base.query = _QueryProperty(self)
         return base
 
