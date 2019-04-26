@@ -92,6 +92,7 @@ def _include_sqlalchemy(obj):
     obj.dynamic_loader = _wrap_with_default_query_class(obj.dynamic_loader)
     obj.event = event
 
+
 def _should_set_tablename(bases, d):
     """Check what values are set by a class and
     its bases to determine if a
