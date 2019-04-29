@@ -3,6 +3,14 @@ Zask Changelog
 
 Here you can see the full list of changes between each Zask release.
 
+Version 1.9.8
+-------------
+
+released on April 29th 2019
+
+* Make it to be compatible with Python2 and Python3
+* Add 'SQLALCHEMY_CONVERT_UNICODE' option to make sure we could convert the field 'String' from 'utf-8' to 'unicode'.
+
 Version 1.9.7
 -------------
 
