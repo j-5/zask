@@ -7,6 +7,7 @@ test:
 
 release:
 	python bin/release.py
+	python3 bin/release.py
 
 docs:
 	$(MAKE) -C docs html
