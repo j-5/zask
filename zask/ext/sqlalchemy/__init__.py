@@ -350,7 +350,6 @@ class SQLAlchemy(object):
         app.config.setdefault('SQLALCHEMY_DATABASE_URI', 'sqlite://')
         app.config.setdefault('SQLALCHEMY_BINDS', None)
         app.config.setdefault('SQLALCHEMY_NATIVE_UNICODE', None)
-        app.config.setdefault('SQLALCHEMY_CONVERT_UNICODE', None)
         app.config.setdefault('SQLALCHEMY_ECHO', False)
         app.config.setdefault('SQLALCHEMY_POOL_SIZE', None)
         app.config.setdefault('SQLALCHEMY_POOL_TIMEOUT', None)
@@ -418,9 +417,6 @@ class SQLAlchemy(object):
             unu = self.use_native_unicode
         if not unu:
             options['use_native_unicode'] = False
-
-        if app.config['SQLALCHEMY_CONVERT_UNICODE']:
-            options['convert_unicode'] = True
 
     @property
     def engine(self):
