@@ -10,6 +10,7 @@
 """
 import inspect
 import gevent
+import sys
 import time
 import uuid
 
@@ -52,6 +53,8 @@ DEFAULT_MIDDLEWARES = [
     ACCESS_LOG_MIDDLEWARE,
     REQUEST_EVENT_MIDDLEWARE
 ]
+
+PY2 = sys.version_info[0] == 2
 
 
 def _milli_time():
@@ -382,6 +385,14 @@ class ZeroRPC(object):
             self.init_app(app)
         else:
             self.app = None
+
+        def __del__(self):
+            """avoid memory leak in py3"""
+            del self.Server.__context__
+            del self.Client.__context__
+
+        if not PY2:
+            setattr(ZeroRPC, '__del__', __del__)
 
     def init_app(self, app):
         """Initial the access logger and zerorpc exception handlers.
