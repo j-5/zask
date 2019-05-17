@@ -386,14 +386,6 @@ class ZeroRPC(object):
         else:
             self.app = None
 
-        def __del__(self):
-            """avoid memory leak in py3"""
-            del self.Server.__context__
-            del self.Client.__context__
-
-        if not PY2:
-            setattr(ZeroRPC, '__del__', __del__)
-
     def init_app(self, app):
         """Initial the access logger and zerorpc exception handlers.
 
@@ -405,7 +397,7 @@ class ZeroRPC(object):
         if self._middlewares:
             self._init_zerorpc_context()
         else:
-            _Server.__context__ = _Client.__context__ = None
+            _Server.__context = _Client.__context = None
 
     def _init_zerorpc_context(self):
         context = zerorpc.Context()
@@ -426,12 +418,12 @@ class ZeroRPC(object):
         if REQUEST_EVENT_MIDDLEWARE in self._middlewares:
             context.register_middleware(RequestEventMiddleware())
 
-        _Server.__context__ = _Client.__context__ = context
+        _Server.__context = _Client.__context = context
 
     def register_middleware(self, middleware):
-        context = _Server.__context__ or zerorpc.Context()
+        context = _Server.__context or zerorpc.Context()
         context.register_middleware(middleware)
-        _Server.__context__ = _Client.__context__ = context
+        _Server.__context = _Client.__context = context
 
     def _init_zerorpc_logger(self):
         if self.app.config['DEBUG']:
@@ -463,14 +455,14 @@ class _Server(zerorpc.Server):
     """
     __version__ = None
     __service_name__ = None
-    __context__ = None
+    __context = None
 
     def __init__(self, methods=None, context=None, **kargs):
         if methods is None:
             methods = self
 
         context_ = context \
-            or _Server.__context__ \
+            or _Server.__context \
             or zerorpc.Context.get_instance()
         heartbeat = kargs.pop('heartbeat', None)
         zerorpc.Server.__init__(self,
@@ -501,7 +493,7 @@ class _Server(zerorpc.Server):
         Requires RequestEventMiddleware to be enabled to work.
         """
         enabled_middlewares = [mw.__class__.__name__ for mw in
-                               self.__context__._middlewares]
+                               self.__context._middlewares]
         if 'RequestEventMiddleware' not in enabled_middlewares:
             raise MissingMiddlewareException('RequestEventMiddleware')
         return getattr(_request_ctx.stash, 'request_event')
@@ -511,14 +503,14 @@ class _Client(zerorpc.Client):
 
     """Extends zerorpc.Client by the middlewares
     """
-    __context__ = None
+    __context = None
 
     def __init__(self, connect_to=None, context=None, version=None, **kargs):
         self._connect_to = connect_to
         self._service_version = version
         heartbeat = kargs.pop('heartbeat', None)
         context_ = context \
-            or _Client.__context__ \
+            or _Client.__context \
             or zerorpc.Context.get_instance()
         # let this client handle connect all the time by setting
         # connect_to=None
