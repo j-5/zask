@@ -317,6 +317,11 @@ class AccessLogMiddleware(object):
         })
 
 
+# cannot define in class, or will cause error while script quit.
+__Server_context = None
+__Client_context = None
+
+
 class ZeroRPC(object):
 
     """This is a class used to integrate zerorpc to the Zask application.
@@ -397,7 +402,8 @@ class ZeroRPC(object):
         if self._middlewares:
             self._init_zerorpc_context()
         else:
-            _Server.__context = _Client.__context = None
+            global __Server_context, __Client_context
+            __Server_context = __Client_context = None
 
     def _init_zerorpc_context(self):
         context = zerorpc.Context()
@@ -418,12 +424,14 @@ class ZeroRPC(object):
         if REQUEST_EVENT_MIDDLEWARE in self._middlewares:
             context.register_middleware(RequestEventMiddleware())
 
-        _Server.__context = _Client.__context = context
+        global __Server_context, __Client_context
+        __Server_context = __Client_context = context
 
     def register_middleware(self, middleware):
-        context = _Server.__context or zerorpc.Context()
+        global __Server_context, __Client_context
+        context = __Server_context or zerorpc.Context()
         context.register_middleware(middleware)
-        _Server.__context = _Client.__context = context
+        __Server_context = __Client_context = context
 
     def _init_zerorpc_logger(self):
         if self.app.config['DEBUG']:
@@ -455,14 +463,14 @@ class _Server(zerorpc.Server):
     """
     __version__ = None
     __service_name__ = None
-    __context = None
 
     def __init__(self, methods=None, context=None, **kargs):
         if methods is None:
             methods = self
+        global __Server_context
 
         context_ = context \
-            or _Server.__context \
+            or __Server_context \
             or zerorpc.Context.get_instance()
         heartbeat = kargs.pop('heartbeat', None)
         zerorpc.Server.__init__(self,
@@ -492,8 +500,9 @@ class _Server(zerorpc.Server):
         """Returns the request_event from the local greenlet storage.
         Requires RequestEventMiddleware to be enabled to work.
         """
+        global __Server_context
         enabled_middlewares = [mw.__class__.__name__ for mw in
-                               self.__context._middlewares]
+                               __Server_context._middlewares]
         if 'RequestEventMiddleware' not in enabled_middlewares:
             raise MissingMiddlewareException('RequestEventMiddleware')
         return getattr(_request_ctx.stash, 'request_event')
@@ -503,14 +512,14 @@ class _Client(zerorpc.Client):
 
     """Extends zerorpc.Client by the middlewares
     """
-    __context = None
-
     def __init__(self, connect_to=None, context=None, version=None, **kargs):
+        global __Client_context
+
         self._connect_to = connect_to
         self._service_version = version
         heartbeat = kargs.pop('heartbeat', None)
         context_ = context \
-            or _Client.__context \
+            or __Client_context \
             or zerorpc.Context.get_instance()
         # let this client handle connect all the time by setting
         # connect_to=None
