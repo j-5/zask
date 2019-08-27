@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
+
+__version__ = '1.10.0'
+
 import gevent
 from gevent.local import local
 
 from zask.config import Config
 from zask.logging import create_logger
 from zask.utils import get_root_path
-
-__version__ = '1.9.8'
 
 
 class Zask(object):

@@ -3,12 +3,19 @@ Zask Changelog
 
 Here you can see the full list of changes between each Zask release.
 
+Version 1.10.0
+-------------
+
+released on August 27th 2019
+
+* Make it to be compatible with Python2 and Python3
+
 Version 1.9.8
 -------------
 
-released on April 29th 2019
+released on July 3rd 2019
 
-* Make it to be compatible with Python2 and Python3
+* Add origin access key to thread local and bring it to next service
 
 Version 1.9.7
 -------------
