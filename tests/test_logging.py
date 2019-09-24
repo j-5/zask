@@ -10,7 +10,6 @@ import unittest
 import tempfile
 
 from zask import Zask
-from zask.logging import create_logger
 
 
 class TestLogging(unittest.TestCase):

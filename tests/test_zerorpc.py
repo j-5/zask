@@ -8,17 +8,13 @@
 import os
 import time
 import unittest
-import pytest
 import tempfile
 
-import zerorpc
-import gevent
 from zerorpc.channel import logger as channel_logger
 from zerorpc.gevent_zmq import logger as gevent_logger
 from zerorpc.core import logger as core_logger
 from zask import Zask
 from zask.ext.zerorpc import init_zerorpc, access_log
-from zask.logging import create_logger
 
 
 def clear_handlers():
